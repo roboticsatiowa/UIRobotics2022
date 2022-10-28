@@ -1,3 +1,9 @@
+# This is a premade .gitignore template for python projects
+# I dont know what half of this stuff is and i probably dont need to
+# so dont worry if this file doesnt make sense to you. its not that important
+# -Ethan 10/25/2022
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
