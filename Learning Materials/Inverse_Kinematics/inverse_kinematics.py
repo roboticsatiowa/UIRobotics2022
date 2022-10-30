@@ -5,6 +5,8 @@ import pygame
 from pygame.math import Vector2
 
 pygame.init()
+pygame.font.init()
+my_font = pygame.font.SysFont('Arial', 20)
 
 size = width, height = 600, 600
 screen = pygame.display.set_mode(size)
@@ -49,6 +51,8 @@ def render():
     for point in points:
         pygame.draw.circle(screen, black, (int(point[0]), int(point[1])), 5)
     pygame.draw.circle(screen, black, (int(target[0]), int(target[1])), 10)
+    text_surface = my_font.render(str(angles[2]), False, (0, 0, 0))
+    screen.blit(text_surface, (20, 20))
     pygame.display.flip()
 
 
