@@ -12,14 +12,14 @@ size = width, height = 600, 600
 screen = pygame.display.set_mode(size)
 
 points = list(map(Vector2, [(300, 300), (400, 300),
-              (500, 300), (540, 300)]))
-target = Vector2(450, 300)
+              (500, 300)]))
 target_speed = Vector2(3, 3)
 
 rel_points = []
 angles = []
 
-max_angle = [360, 360, 120]  # Adjust for limited angles
+max_angles = [90, -10, -10]  # Adjust for limited angles
+min_angles = [10, -120, -120]
 
 for i in range(1, len(points)):
     rel_points.append(points[i] - points[i-1])
@@ -33,8 +33,10 @@ def solve_ik(i, endpoint, target):
 
     angle = (endpoint-current_point).angle_to(target-current_point)
     angles[i] += angle
-    angles[i] = min(max(180 - max_angle[i], (angles[i]+180) %
-                    360), 180 + max_angle[i]) - 180
+
+    # honestly have no idea how this works
+    angles[i] = min(max(180 - max_angles[i], (angles[i]+180) %
+                    360), 180 - min_angles[i]) - 180
 
     return current_point + (endpoint-current_point).rotate(angle)
 
@@ -51,17 +53,20 @@ def render():
     for point in points:
         pygame.draw.circle(screen, black, (int(point[0]), int(point[1])), 5)
     pygame.draw.circle(screen, black, (int(target[0]), int(target[1])), 10)
-    text_surface = my_font.render(str(angles[2]), False, (0, 0, 0))
+    text_surface = my_font.render(str(angles[1]), False, (0, 0, 0))
     screen.blit(text_surface, (20, 20))
     pygame.display.flip()
 
 
+n = 0
 while 1:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
-
+    # points = list(map(Vector2, [(300, 300), (400, 300),
+    #                             (500, 300), (540, 300)]))
     target = pygame.mouse.get_pos()
+    target = (min(max(target[0], 400), 470), min(max(target[1], 200), 350))
     solve_ik(0, points[-1], target)
     angle = 0
     for i in range(1, len(points)):
