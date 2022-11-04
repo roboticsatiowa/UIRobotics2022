@@ -34,7 +34,6 @@ class BaseStationSock():
         print(f'Server started on {self.HOST}:{self.PORT}')
         print('Waiting for clients...')
 
-        threads = []
         for i in range(self.NUMC):
             # Establish connection with client.
             conn, addr = self.sock.accept()

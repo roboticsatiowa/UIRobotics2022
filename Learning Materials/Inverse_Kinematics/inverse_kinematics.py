@@ -40,6 +40,7 @@ def solve_ik(i, endpoint, target):  # recursively solve for the needed roation o
     angles[i] += angle
 
     # honestly have no idea how this works
+    # limits the angles of each joint
     angles[i] = min(max(180 - max_angles[i], (angles[i]+180) %
                     360), 180 - min_angles[i]) - 180
 
@@ -82,7 +83,7 @@ def render():
 
 
 n = 0
-target = (400, 301)
+target = (200, 305)
 while 1:
 
     # check for x button clicked on GUI window
