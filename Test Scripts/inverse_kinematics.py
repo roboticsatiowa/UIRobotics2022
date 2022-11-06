@@ -10,8 +10,8 @@ from pygame.math import Vector2
 points = list(map(Vector2, [(100, 300), (200, 300), (300, 300)]))
 
 # define min and max angles each joint can move
-max_angles = [90, 0]
-min_angles = [-10, -120]
+max_angles = [130, 0]
+min_angles = [-10, -150]
 
 # boundaries which end affector (target) is clamped to ((xlow, xhigh), (ylow, yhigh))
 target_bounds = ((101, 300), (200, 390))
@@ -115,8 +115,8 @@ def start_IK():
             rel_target.scale_to_length(190)
             rel_target = (points[0] + rel_target)
             target = (int(rel_target.x), int(rel_target.y))
-        elif rel_target.magnitude() < 100:
-            rel_target.scale_to_length(100)
+        elif rel_target.magnitude() < 50:
+            rel_target.scale_to_length(50)
             rel_target = (points[0] + rel_target)
             target = (int(rel_target.x), int(rel_target.y))
 
@@ -127,3 +127,7 @@ def start_IK():
         render()
 
         pygame.time.wait(int(1000/60))
+
+
+if __name__ == '__main__':
+    start_IK()
