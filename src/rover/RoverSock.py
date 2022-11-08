@@ -23,5 +23,5 @@ class RoverSock:
             sock.sendall(sock_name.encode("UTF-8"))
             self.newConnHandler(sock, sock_name)
 
-    def set_callback(self, callback: Callable[[socket.socket, tuple], None]):
+    def set_callback(self, callback: Callable[[socket.socket, str], None]):
         self.newConnHandler = callback
