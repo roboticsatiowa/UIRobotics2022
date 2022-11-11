@@ -47,6 +47,9 @@ class VectorObject:
                                         [cx * sz + cz * sx * sy, cx * cz - sx * sy * sz, -cy * sx],
                                         [sx * sz - cx * cz * sy, cz * sx + cx * sy * sz, cx * cy ]])
 
+#    How will we do this from XBox controller?
+   
+   
     def rotate(self):
         # Apply a rotation defined by a given rotation matrix.
         matrix = np.vstack((self.rotationMatrix, self.position[0:3]))   # add position to rotation matrix to move object at the same time
