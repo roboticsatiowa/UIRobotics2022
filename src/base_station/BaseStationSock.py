@@ -7,7 +7,7 @@ class BaseStationSock:
     def __init__(self,
                  callback: Callable = None,
                  addr: tuple[str, int] = ('localhost', 50000),
-                 numconn: int = 1) -> None:
+                 numconn: int = 1):
         # create socket object
         self.newConnHandler = callback
         self.sock = socket.socket()
