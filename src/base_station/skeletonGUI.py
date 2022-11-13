@@ -1,85 +1,84 @@
 # importing libraries
+import sys
+from urllib.request import urlretrieve
+
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import *
 from PyQt5.QtWidgets import QApplication
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtGui import *
-from PyQt5.QtGui import QIcon, QPixmap
-from PyQt5.QtCore import *
-from urllib.request import urlopen, urlretrieve
-import sys
-
-#get api key
+# get api key
 from secret_key import MAP_API_KEY
 
-#commit comment
+
+# commit comment
 class Window(QMainWindow):
     def __init__(self):
         super().__init__()
-        
+
         # set default gui properties
         self.setWindowTitle("Rover GUI")
-        
-        self.setGeometry(1000, 1000, 1000, 1000)
-        
-        self.UiComponents()
-        
-        self.show()
-     
 
-    	# # showing all the widgets
-    	# self.show()
-    #def valuechange(slider, self):
-     #   sliderLabel = QLabel()
-      #  sliderLabel.setGeometry(700, 650, 10, 10)
-       # sliderLabel.setStyleSheet("border: 3px solid orange")
-        #sliderLabel.setFont(QFont('Arial', 15))
-        #sliderLabel.setAlignment(Qt.AlignCenter)
+        self.setGeometry(1000, 1000, 1000, 1000)
+
+        self.UiComponents()
+
+        self.show()
+
+    # # showing all the widgets
+    # self.show()
+    # def valuechange(slider, self):
+    #   sliderLabel = QLabel()
+    #  sliderLabel.setGeometry(700, 650, 10, 10)
+    # sliderLabel.setStyleSheet("border: 3px solid orange")
+    # sliderLabel.setFont(QFont('Arial', 15))
+    # sliderLabel.setAlignment(Qt.AlignCenter)
 
     def getMapImage(self, lat, lng, zoom):
         urlbase = "http://maps.google.com/maps/api/staticmap?"
-        GOOGLEAPIKEY = MAP_API_KEY # Liao's personal api key, must get new one if expired
-        args = "center={},{}&zoom={}&size={}x{}&format=gif&maptype={}&markers=color:red|size:small|{},{}|{},{}|".format(lat,lng,zoom,400,400,"roadmap",lat,lng, self.latitudeSecond, self.longitudeSecond)
+        GOOGLEAPIKEY = MAP_API_KEY  # Liao's personal api key, must get new one if expired
+        args = "center={},{}&zoom={}&size={}x{}&format=gif&maptype={}&markers=color:red|size:small|{},{}|{},{}|".format(
+            lat, lng, zoom, 400, 400, "roadmap", lat, lng, self.latitudeSecond, self.longitudeSecond)
         args = args + "&key=" + GOOGLEAPIKEY
-        mapURL = urlbase+args
+        mapURL = urlbase + args
         urlretrieve(mapURL, 'googlemap.png')
         img = QPixmap('googlemap.png')
         return img
 
-
     # method for widgets
     def UiComponents(self):
 
-    	# variables
-    	# count variable
+        # variables
+        # count variable
         self.count = 0
-        self.latitude = 41.702389 # luke's house latitude
-        self.longitude = -91.582108 # luke's house longitude
-        
+        self.latitude = 41.702389  # luke's house latitude
+        self.longitude = -91.582108  # luke's house longitude
+
         self.latitudeSecond = 41.703
         self.longitudeSecond = -91.59
 
-    	# start flag
+        # start flag
         self.start = False
 
-        #creating label as camera feed placeholder
-#        pic = QLabel(self)
-#        pixmap = QPixmap("rover1.png")
-#        smaller_pixmap = pixmap.scaled(400, 300, Qt.KeepAspectRatio, Qt.FastTransformation)
-#        pic.setPixmap(smaller_pixmap)
-#        pic.resize(400,300)
-#        pic.move(50,50)
-#        pic.show()
+        # creating label as camera feed placeholder
+        #        pic = QLabel(self)
+        #        pixmap = QPixmap("rover1.png")
+        #        smaller_pixmap = pixmap.scaled(400, 300, Qt.KeepAspectRatio, Qt.FastTransformation)
+        #        pic.setPixmap(smaller_pixmap)
+        #        pic.resize(400,300)
+        #        pic.move(50,50)
+        #        pic.show()
 
-#        pic1 = QLabel(self)
-#        pixmap2 = QPixmap("astronaut.png")
-#        smaller_pixmap2 = pixmap2.scaled(400,300, Qt.KeepAspectRatio, Qt.FastTransformation)
-#        pic1.setPixmap(smaller_pixmap2)
-#        pic1.resize(400,300)
-#        pic1.move(550,50)
-#        pic1.show()
+        #        pic1 = QLabel(self)
+        #        pixmap2 = QPixmap("astronaut.png")
+        #        smaller_pixmap2 = pixmap2.scaled(400,300, Qt.KeepAspectRatio, Qt.FastTransformation)
+        #        pic1.setPixmap(smaller_pixmap2)
+        #        pic1.resize(400,300)
+        #        pic1.move(550,50)
+        #        pic1.show()
 
         label1 = QLabel("Camera Feed 1", self)
-        label1.setGeometry(50, 50,400,300)
+        label1.setGeometry(50, 50, 400, 300)
         label1.setStyleSheet("border: 3px solid orange")
         label1.setFont(QFont('Arial', 15))
         label1.setAlignment(Qt.AlignCenter)
@@ -90,7 +89,6 @@ class Window(QMainWindow):
         label2.setFont(QFont('Arial', 15))
         label2.setAlignment(Qt.AlignCenter)
 
-
         # GPS Container
         # label3 = QLabel("GPS", self)
         # label3.setGeometry(700, 400, 200,200)
@@ -100,7 +98,7 @@ class Window(QMainWindow):
 
         # GPS container but at the same time, handles slider value change
         self.label3 = QLabel("GPS", self)
-        self.label3.setGeometry(700, 400, 200,200)
+        self.label3.setGeometry(700, 400, 200, 200)
         # displays default coordinate location on load
         self.getMapImage(self.latitude, self.longitude, 12)
         # self.label3.clear()
@@ -110,24 +108,24 @@ class Window(QMainWindow):
         self.label3.setStyleSheet("border: 3px solid orange")
         self.label3.setFont(QFont('Arial', 15))
         self.label3.setAlignment(Qt.AlignCenter)
-        
+
         # ===== Not too sure what these two lines do - Liao =====
         # gpsGeomoetry = self.geometry().bottomRight() - label3.geometry().bottomRight() - QPoint(100, 100)
         # label3.move(gpsGeomoetry)
 
-    	# creating push button to get time in seconds
+        # creating push button to get time in seconds
         button = QPushButton("Set time", self)
         button.setGeometry(325, 530, 150, 50)
         button.clicked.connect(self.get_seconds)
 
-    	# creating label to show the seconds
+        # creating label to show the seconds
         self.label = QLabel("00:00", self)
         self.label.setGeometry(340, 470, 300, 50)
         self.label.setStyleSheet("border : 3px solid black")
         self.label.setFont(QFont('Arial', 15))
         self.label.setAlignment(Qt.AlignCenter)
 
-    	# creating start button
+        # creating start button
         start_button = QPushButton("Start", self)
         start_button.setGeometry(500, 530, 150, 50)
         start_button.clicked.connect(self.start_action)
@@ -137,16 +135,16 @@ class Window(QMainWindow):
         pause_button.setGeometry(325, 600, 150, 50)
         pause_button.clicked.connect(self.pause_action)
 
-    	# creating reset button
+        # creating reset button
         reset_button = QPushButton("Reset", self)
         reset_button.setGeometry(500, 600, 150, 50)
         reset_button.clicked.connect(self.reset_action)
 
-    	# creating a timer object
+        # creating a timer object
         timer = QTimer(self)
-		# adding action to timer
+        # adding action to timer
         timer.timeout.connect(self.showTime)
-		# update the timer every tenth second
+        # update the timer every tenth second
         timer.start(100)
 
         # creating stop button
@@ -164,13 +162,13 @@ class Window(QMainWindow):
         manualButton.setGeometry(50, 650, 200, 100)
         manualButton.clicked.connect(self.manual_action)
 
-        #creating latitude input text box
+        # creating latitude input text box
         latitudeButton = QPushButton("Set Latitude", self)
         latitudeButton.setGeometry(700, 650, 100, 50)
         latitudeButton.clicked.connect(self.getLatitude)
         latitudeButton.setFont(QFont('Arial', 11))
 
-        #creating longitude input text box
+        # creating longitude input text box
         longitudeButton = QPushButton("Set Longitude", self)
         longitudeButton.setGeometry(800, 650, 100, 50)
         longitudeButton.clicked.connect(self.getLongitude)
@@ -186,8 +184,6 @@ class Window(QMainWindow):
         self.slider.setGeometry(700, 600, 200, 50)
         self.slider.valueChanged.connect(self.sliderValueChanged)
 
-
-
     # method called by stop button
     def stop_action(self):
         print("ROVER STOPPED")
@@ -200,53 +196,51 @@ class Window(QMainWindow):
     def manual_action(self):
         print("ROVER IN MANUAL MODE")
 
-	# method called by timer
+    # method called by timer
     def showTime(self):
 
-		# checking if flag is true
+        # checking if flag is true
         if self.start:
-			# incrementing the counter
+            # incrementing the counter
             self.count -= 1
 
-			# timer is completed
+            # timer is completed
             if self.count == 0:
-
-				# making flag false
+                # making flag false
                 self.start = False
 
-				# setting text to the label
+                # setting text to the label
                 self.label.setText("Finished")
 
         if self.start:
-			# getting text from count
+            # getting text from count
             text = str(self.count / 10) + " s"
 
-			# showing text
+            # showing text
             self.label.setText(text)
 
-
-	# method called by the push button
+    # method called by the push button
     def get_seconds(self):
 
-		# making flag false
+        # making flag false
         self.start = False
 
-		# getting seconds and flag
+        # getting seconds and flag
         second, done = QInputDialog.getInt(self, 'Seconds', 'Enter Seconds:')
 
-		# if flag is true
+        # if flag is true
         if done:
-			# changing the value of count
+            # changing the value of count
             self.count = second * 10
 
-			# setting text to the label
+            # setting text to the label
 
             self.label.setText(str(second))
 
             # self.label.setText(str(hrs)+":"+str(mins)+":"+str(second))
-            #self.label.setText(str(second))
-            
-    #method to get latitude
+            # self.label.setText(str(second))
+
+    # method to get latitude
     def getLatitude(self):
         self.latitude, ok = QInputDialog.getDouble(self, "Latitude", "Enter Latitude", self.latitude, -90, 90)
         if ok:
@@ -257,7 +251,7 @@ class Window(QMainWindow):
         else:
             pass
 
-    #method to get longitude
+    # method to get longitude
     def getLongitude(self):
         self.longitude, ok = QInputDialog.getDouble(self, "Longitude", "Enter Longitude", self.longitude, -180, 180)
         if ok:
@@ -268,8 +262,7 @@ class Window(QMainWindow):
         else:
             pass
 
-
-    #slider value change method
+    # slider value change method
     def sliderValueChanged(self):
         try:
             self.getMapImage(self.latitude, self.longitude, self.slider.value())
@@ -280,29 +273,28 @@ class Window(QMainWindow):
             print("Error Retrieving Map")
 
     def start_action(self):
-		# making flag true
+        # making flag true
         self.start = True
 
-		# count = 0
+        # count = 0
         if self.count == 0:
             self.start = False
 
     def pause_action(self):
 
-		# making flag false
+        # making flag false
         self.start = False
 
     def reset_action(self):
 
-		# making flag false
+        # making flag false
         self.start = False
 
-		# setting count value to 0
+        # setting count value to 0
         self.count = 0
 
-		# setting label text
+        # setting label text
         self.label.setText("00:00")
-
 
 
 # create pyqt5 app
