@@ -6,11 +6,11 @@ from PyQt5.QtGui import *
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtCore import *
 from urllib.request import urlopen, urlretrieve
-from secret_key import MAP_API_KEY
+#from secret_key import MAP_API_KEY
 import sys
 
 #get api key
-# MAP_API_KEY = "AIzaSyAhRa4yO8p6r-jKl7h7NQ3zSN4Iqn9O4ng"
+MAP_API_KEY = "AIzaSyCOZPpgk37DJCQstaqwhI1Wmd09aE1R48k"
 
 class Window(QMainWindow):
     def __init__(self):
