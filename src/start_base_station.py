@@ -7,7 +7,7 @@ import cv2
 
 from base_station.BaseStationSock import BaseStationSock
 
-threads = []
+threads = dict()
 
 main_conn = None
 
@@ -46,17 +46,17 @@ def read_video_stream(conn: socket.socket, addr: tuple) -> None:
 
 
 def on_new_connection(conn: socket.socket, addr: tuple) -> None:
-    conn_name = conn.recv(1024)
-    print(f'new connection from {addr} called {conn_name.decode("UTF-8")}')
-    if conn_name == b'main':
+    conn_name = conn.recv(1024).decode("UTF-8")
+    print(f'new connection from {addr} called {conn_name}')
+    if conn_name == 'main':
         global main_conn
         main_conn = conn
-    if conn_name == b'video':
+    if conn_name == 'video':
         thread = threading.Thread(target=read_video_stream, args=(conn, addr), daemon=True)
     else:
         return
     thread.start()
-    threads.append(thread)
+    threads[conn_name] = thread
 
 
 sock_handler = BaseStationSock(numconn=4)
@@ -67,8 +67,7 @@ sock_handler.set_callback(on_new_connection)
 # begin to listen for connections
 sock_handler.start_listen()
 
-input("Enter any key to end")
+threads['video'].join()
 
 # cleanup
-cv2.destroyAllWindows()
 sock_handler.sock.close()
