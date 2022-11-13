@@ -1,4 +1,5 @@
 # importing libraries
+# from secret_key import MAP_API_KEY
 import sys
 from urllib.request import urlretrieve
 
@@ -7,11 +8,11 @@ from PyQt5.QtGui import *
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import *
 from PyQt5.QtWidgets import QApplication
+
 # get api key
-from secret_key import MAP_API_KEY
+MAP_API_KEY = "AIzaSyCOZPpgk37DJCQstaqwhI1Wmd09aE1R48k"
 
 
-# commit comment
 class Window(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -28,8 +29,8 @@ class Window(QMainWindow):
     # # showing all the widgets
     # self.show()
     # def valuechange(slider, self):
-    #   sliderLabel = QLabel()
-    #  sliderLabel.setGeometry(700, 650, 10, 10)
+    # sliderLabel = QLabel()
+    # sliderLabel.setGeometry(700, 650, 10, 10)
     # sliderLabel.setStyleSheet("border: 3px solid orange")
     # sliderLabel.setFont(QFont('Arial', 15))
     # sliderLabel.setAlignment(Qt.AlignCenter)
@@ -37,8 +38,8 @@ class Window(QMainWindow):
     def getMapImage(self, lat, lng, zoom):
         urlbase = "http://maps.google.com/maps/api/staticmap?"
         GOOGLEAPIKEY = MAP_API_KEY  # Liao's personal api key, must get new one if expired
-        args = "center={},{}&zoom={}&size={}x{}&format=gif&maptype={}&markers=color:red|size:small|{},{}|{},{}|".format(
-            lat, lng, zoom, 400, 400, "roadmap", lat, lng, self.latitudeSecond, self.longitudeSecond)
+        args = "center={},{}&zoom={}&size={}x{}&format=gif&maptype={}&markers=color:red|size:small|{},{}&markers=color:blue|size:small|{},{}|".format(
+            lat, lng, zoom, 400, 400, "satellite", lat, lng, self.latitudeSecond, self.longitudeSecond)
         args = args + "&key=" + GOOGLEAPIKEY
         mapURL = urlbase + args
         urlretrieve(mapURL, 'googlemap.png')
@@ -98,7 +99,7 @@ class Window(QMainWindow):
 
         # GPS container but at the same time, handles slider value change
         self.label3 = QLabel("GPS", self)
-        self.label3.setGeometry(700, 400, 200, 200)
+        self.label3.setGeometry(700, 400, 250, 250)
         # displays default coordinate location on load
         self.getMapImage(self.latitude, self.longitude, 12)
         # self.label3.clear()
@@ -113,10 +114,11 @@ class Window(QMainWindow):
         # gpsGeomoetry = self.geometry().bottomRight() - label3.geometry().bottomRight() - QPoint(100, 100)
         # label3.move(gpsGeomoetry)
 
+        # ===== WE DON'T NEED THIS ANYMORE - Liao =====
         # creating push button to get time in seconds
-        button = QPushButton("Set time", self)
-        button.setGeometry(325, 530, 150, 50)
-        button.clicked.connect(self.get_seconds)
+        # button = QPushButton("Set time", self)
+        # button.setGeometry(325, 530, 150, 50)
+        # button.clicked.connect(self.get_seconds)
 
         # creating label to show the seconds
         self.label = QLabel("00:00", self)
@@ -126,9 +128,9 @@ class Window(QMainWindow):
         self.label.setAlignment(Qt.AlignCenter)
 
         # creating start button
-        start_button = QPushButton("Start", self)
-        start_button.setGeometry(500, 530, 150, 50)
-        start_button.clicked.connect(self.start_action)
+        self.start_button = QPushButton("Set Time", self)
+        self.start_button.setGeometry(415, 530, 150, 50)
+        self.start_button.clicked.connect(self.start_action)
 
         # creating pause button
         pause_button = QPushButton("Pause", self)
@@ -164,15 +166,27 @@ class Window(QMainWindow):
 
         # creating latitude input text box
         latitudeButton = QPushButton("Set Latitude", self)
-        latitudeButton.setGeometry(700, 650, 100, 50)
+        latitudeButton.setGeometry(720, 670, 100, 50)
         latitudeButton.clicked.connect(self.getLatitude)
         latitudeButton.setFont(QFont('Arial', 11))
 
         # creating longitude input text box
         longitudeButton = QPushButton("Set Longitude", self)
-        longitudeButton.setGeometry(800, 650, 100, 50)
+        longitudeButton.setGeometry(825, 670, 100, 50)
         longitudeButton.clicked.connect(self.getLongitude)
         longitudeButton.setFont(QFont('Arial', 11))
+
+        # creating latitude input text box
+        latitudeButton2 = QPushButton("Set Latitude2", self)
+        latitudeButton2.setGeometry(720, 720, 100, 50)
+        latitudeButton2.clicked.connect(self.getLatitude)
+        latitudeButton2.setFont(QFont('Arial', 11))
+
+        # creating longitude input text box
+        longitudeButton2 = QPushButton("Set Longitude2", self)
+        longitudeButton2.setGeometry(825, 720, 100, 50)
+        longitudeButton2.clicked.connect(self.getLongitude)
+        longitudeButton2.setFont(QFont('Arial', 11))
 
         # Creating slider
         self.slider = QSlider(Qt.Horizontal, self)
@@ -181,7 +195,7 @@ class Window(QMainWindow):
         self.slider.setValue(12)
         self.slider.setTickPosition(QSlider.TicksBelow)
         self.slider.setTickInterval(1)
-        self.slider.setGeometry(700, 600, 200, 50)
+        self.slider.setGeometry(725, 640, 200, 50)
         self.slider.valueChanged.connect(self.sliderValueChanged)
 
     # method called by stop button
@@ -201,7 +215,9 @@ class Window(QMainWindow):
 
         # checking if flag is true
         if self.start:
-            # incrementing the counter
+            self.start_button.setText("Running...")
+
+            # decrementing the counter
             self.count -= 1
 
             # timer is completed
@@ -211,6 +227,9 @@ class Window(QMainWindow):
 
                 # setting text to the label
                 self.label.setText("Finished")
+
+                # reset start button to it's og text
+                self.start_button.setText("Set Time")
 
         if self.start:
             # getting text from count
@@ -279,11 +298,26 @@ class Window(QMainWindow):
         # count = 0
         if self.count == 0:
             self.start = False
+            second, done = QInputDialog.getInt(self, 'Seconds', 'Enter Seconds:', min=0)
+            # if flag is true
+            if done:
+                # changing start button text to reflect it's ready to start counting
+                self.start_button.setText("Start")
+                # changing the value of count
+                if second < 0:
+                    self.count = second * -10
+                else:
+                    self.count = second * 10
+
+                # setting text to the label
+
+                self.label.setText(str(second))
 
     def pause_action(self):
 
         # making flag false
         self.start = False
+        self.start_button.setText("Start")
 
     def reset_action(self):
 
@@ -295,6 +329,9 @@ class Window(QMainWindow):
 
         # setting label text
         self.label.setText("00:00")
+
+        # reset start button text
+        self.start_button.setText("Set Time")
 
 
 # create pyqt5 app
