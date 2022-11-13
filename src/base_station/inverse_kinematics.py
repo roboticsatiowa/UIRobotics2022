@@ -3,15 +3,12 @@ import sys
 import pygame
 from pygame.math import Vector2
 
-# initialize pygame library and sub-modules
-
-
 # create a list of starting locations for each joint
 points = list(map(Vector2, [(100, 300), (200, 300), (300, 300)]))
 
 # define min and max angles each joint can move
-max_angles = [90, 0]
-min_angles = [-10, -120]
+max_angles = [130, 0]
+min_angles = [-10, -150]
 
 # boundaries which end affector (target) is clamped to ((xlow, xhigh), (ylow, yhigh))
 target_bounds = ((101, 300), (200, 390))
@@ -19,71 +16,82 @@ target_bounds = ((101, 300), (200, 390))
 # calculate relative positions of each joint and populate angles array with placeholder values
 rel_points = []
 angles = []
+base_angle = 0
 
 
-def start_IK():
-
+def start_inv_kin():
+    # initialize pygame library and submodules
     pygame.init()
     pygame.font.init()
     my_font = pygame.font.SysFont('Arial', 20)
     print("control with WASD")
 
     # create GUI window pane
-    size = width, height = 600, 600
-    screen = pygame.display.set_mode(size)
+    size = (700, 400)
+    side_view_screen = pygame.display.set_mode(size)
 
     for i in range(1, len(points)):
-        rel_points.append(points[i] - points[i-1])
+        rel_points.append(points[i] - points[i - 1])
         angles.append(0)
 
     def solve_ik(i, endpoint, target):  # recursively solve for the needed roation of each joint
         if i < len(points) - 2:
-            endpoint = solve_ik(i+1, endpoint, target)
+            endpoint = solve_ik(i + 1, endpoint, target)
         current_point = points[i]
 
-        angle = (endpoint-current_point).angle_to(target-current_point)
+        angle = (endpoint - current_point).angle_to(target - current_point)
         angles[i] += angle
 
         # honestly have no idea how this works
         # limits the angles of each joint
-        angles[i] = min(max(180 - max_angles[i], (angles[i]+180) %
-                        360), 180 - min_angles[i]) - 180
+        angles[i] = min(max(180 - max_angles[i], (angles[i] + 180) %
+                            360), 180 - min_angles[i]) - 180
 
-        return current_point + (endpoint-current_point).rotate(angle)
+        return current_point + (endpoint - current_point).rotate(angle)
 
     def render():
         black = 0, 0, 0
         white = 255, 255, 255
         blue = 0, 0, 255
 
-        screen.fill(white)
+        side_view_screen.fill(white)
 
         # draw the arm on screen
-        angle = 0
-        for i in range(1, len(points)):
-            angle += angles[i-1]
-            points[i] = points[i-1] + rel_points[i-1].rotate(angle)
-        for i in range(1, len(points)):
-            prev = points[i-1]
-            cur = points[i]
-            pygame.draw.aaline(screen, black, prev, cur)
-        for point in points:
-            pygame.draw.circle(
-                screen, black, (int(point[0]), int(point[1])), 5)
 
-        # draw target
-        pygame.draw.circle(screen, blue,
-                           (int(target[0]), int(target[1])), 5)
+        def render_side():
+            angle = 0
+            for i in range(1, len(points)):
+                angle += angles[i - 1]
+                points[i] = points[i - 1] + rel_points[i - 1].rotate(angle)
 
-        # create debug text and draw to screen
-        angle1 = my_font.render(str(round(-angles[0], 3)), False, (0, 0, 0))
-        angle2 = my_font.render(str(round(-angles[1], 3)), False, (0, 0, 0))
-        coords = my_font.render(str(target), False, (0, 0, 0))
-        screen.blit(angle1, (20, 20))
-        screen.blit(angle2, (20, 40))
-        screen.blit(coords, (20, 60))
+            for i in range(1, len(points)):
+                prev = points[i - 1]
+                cur = points[i]
+                pygame.draw.aaline(side_view_screen, black, prev, cur)
+
+            for point in points:
+                pygame.draw.circle(
+                    side_view_screen, black, (int(point[0]), int(point[1])), 5)
+
+            # draw target
+            pygame.draw.circle(side_view_screen, blue,
+                               (int(target[0]), int(target[1])), 5)
+
+            # create debug text and draw to screen
+            angle1 = my_font.render(str(round(-angles[0], 3)), False, (0, 0, 0))
+            angle2 = my_font.render(str(round(-angles[1], 3)), False, (0, 0, 0))
+            coords = my_font.render(str(target), False, (0, 0, 0))
+            side_view_screen.blit(angle1, (20, 20))
+            side_view_screen.blit(angle2, (20, 40))
+            side_view_screen.blit(coords, (20, 60))
+
+        def render_top():
+            pass
 
         # update display
+
+        render_top()
+        render_side()
         pygame.display.flip()
 
     n = 0
@@ -115,8 +123,8 @@ def start_IK():
             rel_target.scale_to_length(190)
             rel_target = (points[0] + rel_target)
             target = (int(rel_target.x), int(rel_target.y))
-        elif rel_target.magnitude() < 100:
-            rel_target.scale_to_length(100)
+        elif rel_target.magnitude() < 50:
+            rel_target.scale_to_length(50)
             rel_target = (points[0] + rel_target)
             target = (int(rel_target.x), int(rel_target.y))
 
@@ -126,4 +134,8 @@ def start_IK():
         # update display
         render()
 
-        pygame.time.wait(int(1000/60))
+        pygame.time.wait(int(1000 / 60))
+
+
+if __name__ == '__main__':
+    start_inv_kin()
