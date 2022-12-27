@@ -6,8 +6,6 @@ from typing import Callable
 
 import cv2
 
-import skeletonGUI
-
 threads = dict()
 
 

@@ -12,6 +12,7 @@ class RoverSock:
         self.add_socket("video")
         self.add_socket("audio (placeholder)")
         self.add_socket("gps (placeholer)")
+        self.add_socket("telemetry")
 
     def add_socket(self, socket_name):
         self.socks[socket_name] = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

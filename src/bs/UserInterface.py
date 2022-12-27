@@ -5,9 +5,9 @@ import sys
 import urllib.error
 from urllib.request import urlretrieve
 
-from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtGui import QFont, QPixmap
-from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow, QPushButton, QSlider, QInputDialog
+from PySide6.QtCore import Qt, QTimer
+from PySide6.QtGui import QFont, QPixmap
+from PySide6.QtWidgets import QApplication, QLabel, QMainWindow, QPushButton, QSlider, QInputDialog
 
 from Rover import RoverTelemetry
 
@@ -39,7 +39,10 @@ class Window(QMainWindow):
         self.setWindowTitle("Rover GUI")
         # self.setGeometry(1000, 1000, 1000, 800)
         self.initiate_widgets()
-        self.showFullScreen()
+        self.setMinimumSize(720, 480)
+        self.showMaximized()
+
+        print(self.size())
 
     def get_map_image(self, lat, lng, zoom):
         urlbase = "https://maps.google.com/maps/api/staticmap?"
@@ -311,7 +314,7 @@ def start_gui():
     window = Window()
 
     # start the app
-    app.exec_()
+    app.exec()
 
 
 if __name__ == "__main__":
